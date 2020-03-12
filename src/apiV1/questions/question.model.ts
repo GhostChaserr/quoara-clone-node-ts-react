@@ -25,12 +25,16 @@ const AnswerSchema = new Schema({
 
 const QuestionSchema = new Schema(
 	{
-		postedBy: {
+		user: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User'
 		},
 		question: {
 			type: String
+		},
+		space: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Space'
 		},
 		answers: [ AnswerSchema ],
 		tags: { type: [ String ], index: true }

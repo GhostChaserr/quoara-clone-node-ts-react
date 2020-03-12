@@ -1,6 +1,9 @@
 import * as mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
+// Load schema
+import { PhotoSchema } from '../shared/shared.model';
+
 const UserSchema = Schema(
 	{
 		name: {
@@ -24,6 +27,7 @@ const UserSchema = Schema(
 			required: true,
 			trim: true
 		},
+		avatar: PhotoSchema,
 		role: {
 			type: String,
 			enum: [ 'admin', 'user' ]
