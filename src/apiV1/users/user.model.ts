@@ -30,7 +30,8 @@ const UserSchema = Schema(
 		avatar: PhotoSchema,
 		role: {
 			type: String,
-			enum: [ 'admin', 'user' ]
+			enum: [ 'admin', 'user' ],
+			default: 'user'
 		}
 	},
 	{

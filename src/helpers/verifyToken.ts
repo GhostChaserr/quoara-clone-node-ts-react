@@ -12,8 +12,7 @@ const verifyToken = async (req, res, next): Promise<any> => {
 
 	try {
 		// verifies secret and checks exp
-		const decoded = await jwt.verify(token, config.JWT_ENCRYPTION);
-		req.email = decoded.email;
+		req.user = await jwt.verify(token, config.JWT_ENCRYPTION);
 		next();
 	} catch (err) {
 		res.status(500).send({ auth: false, message: err });

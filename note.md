@@ -4,8 +4,52 @@
 
 # APP TIMELINE
 [x] Server setup
-  [] Models
+  [X] Models
     [x] User model
     [x] Shared models
     [x] Question model
     [x] Space model
+	[] Routes
+		[X] Auth
+			[X] Register user
+			[X] Login user
+			[X] Query logged in user
+		[] Question
+			[x] Create question
+			[x] Query questions
+
+
+# Endpoints - USER
+
+> POST - http://localhost:3000/api/v1/register
+{
+	"name":"george",
+	"lastName":"batsiashvili",
+	"password":"g2eorge123",
+	"email":"nuca_kaxelo@gmail.com"
+}
+
+> POST - http://localhost:3000/api/v1/authenticate
+{
+	"password":"g2eorge123",
+	"email":"nuca_kaxelo@gmail.com"
+}
+
+> GET - http://localhost:3000/api/v1/users
+{
+
+}
+
+# Endpoints - QUESTION
+
+> POST - http://localhost:3000/api/v1/questions 
+{
+	"tags": ["enterprenruaship", "food"],
+	"question":"ra aris sauketso gza imistvis"
+}
+
+> GET - http://localhost:3000/api/v1/questions
+{
+
+}
+

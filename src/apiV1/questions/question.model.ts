@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
+import { UserSchema } from '../shared/shared.model';
+
 const AnswerSchema = new Schema({
 	answer: {
 		type: String,
@@ -25,10 +27,7 @@ const AnswerSchema = new Schema({
 
 const QuestionSchema = new Schema(
 	{
-		user: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'User'
-		},
+		user: UserSchema,
 		question: {
 			type: String
 		},
