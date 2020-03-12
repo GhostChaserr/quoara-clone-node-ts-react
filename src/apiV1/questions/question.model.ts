@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-import { UserSchema } from '../shared/shared.model';
+import { UserSchema, PhotoSchema } from '../shared/shared.model';
 
 const AnswerSchema = new Schema({
 	answer: {
@@ -29,11 +29,23 @@ const QuestionSchema = new Schema(
 	{
 		user: UserSchema,
 		question: {
-			type: String
+			type: String,
+			required: true
 		},
+		images: [ PhotoSchema ],
 		space: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Space'
+		},
+		voters: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'User'
+			}
+		],
+		up_votes: {
+			type: Number,
+			default: 0
 		},
 		answers: [ AnswerSchema ],
 		tags: { type: [ String ], index: true }

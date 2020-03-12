@@ -21,23 +21,18 @@ export default class QuestionController {
 
 	public createQuestion = async (req: any, res: Response) => {
 		// Deconstruct body
-		const { tags, question } = req.body;
+		const { tags, question, images } = req.body;
 
-		// user: {
-		// 	type: mongoose.Schema.Types.ObjectId,
-		// 	ref: 'User'
-		// },
-		// name: {
-		// 	type: String,
-		// 	required: true,
-		// 	trim: true
-		// },
-		// lastName: {
-		// 	type: String,
-		// 	required: true
-		// },
+		let media: any = [];
 
-		// Data validation
+		if (!images || images.length === 0) {
+			media = [
+				{
+					path: 'sample-image',
+					filename: 'sample-filename'
+				}
+			];
+		}
 
 		try {
 			// Createnew question
@@ -48,6 +43,7 @@ export default class QuestionController {
 					name: req.user.name,
 					lastName: req.user.lastName
 				},
+				images: media,
 				answers: [],
 				tags: tags
 			});

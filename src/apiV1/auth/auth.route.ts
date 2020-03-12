@@ -16,4 +16,7 @@ user.post('/register', controller.register);
 // Query logged in user
 user.get('/me', authenticate, controller.queryMe);
 
+// Query user questions
+user.get('/me/questions', authenticate, controller.queryUserQuestions);
+
 export default user;

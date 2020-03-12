@@ -2,7 +2,10 @@ import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import * as jwt from 'jwt-then';
 import config from '../../config/config';
+
+// Load models
 import User from '../users/user.model';
+import Question from '../questions/question.model';
 
 export default class UserController {
 	public authenticate = async (req: Request, res: Response): Promise<any> => {
@@ -96,6 +99,13 @@ export default class UserController {
 			data: user,
 			success: true,
 			error: null
+		});
+	};
+
+	public queryUserQuestions = async (req, res) => {
+		const questions = await Question.find({ 'user.user': req.user._id });
+		return res.json({
+			data: questions
 		});
 	};
 }

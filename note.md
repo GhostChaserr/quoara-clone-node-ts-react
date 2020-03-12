@@ -14,12 +14,13 @@
 			[X] Register user
 			[X] Login user
 			[X] Query logged in user
+			[X] Query user questions
 		[] Question
 			[x] Create question
 			[x] Query questions
 
 
-# Endpoints - USER
+# Endpoints - AUTH
 
 > POST - http://localhost:3000/api/v1/register
 {
@@ -38,6 +39,16 @@
 > GET - http://localhost:3000/api/v1/users
 {
 
+}
+
+> GET - http://localhost:3000/api/v1/me/questions
+{
+
+}
+
+> GET - http://localhost:3000/api/v1/me
+{
+	
 }
 
 # Endpoints - QUESTION
