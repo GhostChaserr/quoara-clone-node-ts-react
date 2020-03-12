@@ -48,7 +48,7 @@
 
 > GET - http://localhost:3000/api/v1/me
 {
-	
+
 }
 
 # Endpoints - QUESTION
@@ -64,3 +64,14 @@
 
 }
 
+> PUT - http://localhost:3000/api/v1/questions/5e6a1ef127e409248851f8a3?action=answer-question
+{
+	answer: "some answer"
+}
+
+> PUT - http://localhost:3000/api/v1/questions/5e6a1ef127e409248851f8a3?action=upvote-question
+{
+
+}
+
+> PUT - http://localhost:3000/api/v1/questions/5e6a2f44f470552670a9115b?action=trash-question

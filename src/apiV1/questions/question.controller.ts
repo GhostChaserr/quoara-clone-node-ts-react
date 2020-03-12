@@ -58,4 +58,40 @@ export default class QuestionController {
 			return res.json({ error });
 		}
 	};
+
+	public updateQuestion = async (req: any, res: Response) => {
+		// Query question
+		let question = await Question.findById(req.params.id);
+		switch (req.query.action) {
+			case 'upvote-question':
+				question.voters.push(req.user._id);
+				question.votes = question.votes + 1;
+				await question.save();
+				return res.json({ msg: question });
+			case 'answer-question':
+				// Create new answer
+
+				if (!req.body.answer) return res.json({ msg: 'provide answer!' });
+
+				let answer = {
+					answer: req.body.answer,
+					user: {
+						user: req.user._id,
+						name: req.user.name,
+						lastName: req.user.lastName
+					},
+					voters: []
+				};
+				question.answers.push(answer);
+				await question.save();
+
+				return res.json({ msg: question });
+			case 'trash-question':
+				question.status = 'deleted';
+				await question.save();
+				return res.json({ msg: question });
+			default:
+				return res.json({ msg: 'provide action' });
+		}
+	};
 }

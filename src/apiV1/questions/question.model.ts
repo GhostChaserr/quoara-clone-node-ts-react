@@ -8,20 +8,20 @@ const AnswerSchema = new Schema({
 		type: String,
 		required: true
 	},
-	user: new Schema({
-		name: {
-			type: String,
-			required: true,
-			trim: true
-		},
-		lastName: {
-			type: String,
-			required: true
-		}
-	}),
+	user: UserSchema,
 	created_at: {
 		type: Date,
 		default: Date.now()
+	},
+	voters: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'User'
+		}
+	],
+	votes: {
+		type: Number,
+		default: 0
 	}
 });
 
@@ -43,12 +43,17 @@ const QuestionSchema = new Schema(
 				ref: 'User'
 			}
 		],
-		up_votes: {
+		votes: {
 			type: Number,
 			default: 0
 		},
 		answers: [ AnswerSchema ],
-		tags: { type: [ String ], index: true }
+		tags: { type: [ String ], index: true },
+		status: {
+			type: String,
+			enum: [ 'deleted', 'active' ],
+			default: 'active'
+		}
 	},
 	{
 		timestamps: true,

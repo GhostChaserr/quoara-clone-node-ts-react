@@ -13,5 +13,6 @@ question.get('/', controller.queryQuestions);
 
 // Register new question
 question.post('/', authenticate, controller.createQuestion);
+question.put('/:id', authenticate, controller.updateQuestion);
 
 export default question;
