@@ -18,6 +18,13 @@
 		[] Question
 			[x] Create question
 			[x] Query questions
+			[x] Vote question
+			[x] Answer question
+			[x] Trash question
+		[] Space
+			[] Register space
+			[] Query space
+			[] Post space question
 
 
 # Endpoints - AUTH
@@ -75,3 +82,18 @@
 }
 
 > PUT - http://localhost:3000/api/v1/questions/5e6a2f44f470552670a9115b?action=trash-question
+
+
+# ENDPOINTS - SPACE
+
+> POST - http://localhost:3000/api/v1/spaces
+{
+	"title":"sivrce1",
+	"description": "sivrce2",
+	"tags": ["sivrce1"]
+}
+
+> GET - http://localhost:3000/api/v1/spaces
+{
+	
+}

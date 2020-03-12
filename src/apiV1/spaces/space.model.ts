@@ -14,8 +14,9 @@ const SpaceSchema = new Schema(
 			required: true
 		},
 		cover: PhotoSchema,
+		tags: { type: [ String ], index: true },
 		members: [ UserSchema ],
-		admins: [ AdminSchema ]
+		admins: [ UserSchema ]
 	},
 	{
 		timestamps: true,
