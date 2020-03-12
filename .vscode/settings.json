@@ -1,0 +1,5 @@
+{
+  "emmet.showSuggestionsAsSnippets": false,
+  "bracketPairColorizer.highlightActiveScope": false,
+  "editor.formatOnSave":true
+}
