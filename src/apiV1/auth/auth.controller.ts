@@ -80,10 +80,20 @@ export default class UserController {
 
 			const newUser = await user.save();
 
+			const tokenPayload = {
+				_id: newUser._id,
+				name: newUser.name,
+				lastName: newUser.lastName
+			};
+
+			const token = await jwt.sign(tokenPayload, config.JWT_ENCRYPTION, {
+				expiresIn: config.JWT_EXPIRATION
+			});
+
 			res.status(201).send({
 				success: false,
 				message: 'User Successfully created',
-				data: newUser
+				data: token
 			});
 		} catch (err) {
 			res.status(500).send({

@@ -1,43 +1,71 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 
 // Load router
 import { BrowserRouter as Router, Route, Switch, BrowserRouter, NavLink, Link } from 'react-router-dom';
 
 // Load screens
-import Register from './screens/auth/Register';
 import Login from './screens/auth/Login';
 import Feed from './screens/auth/Feed';
+import Questions from './screens/questions/Questions';
+import Spaces from './screens/spaces/Spaces';
 
 // Load components
 import Layout from './components/Layout';
+
+// Store
+import store from './store/store';
+import Signup from './screens/auth/Signup';
+import { authenticate, logout } from './store/actions/authActions';
 
 const Navigation = () => (
 	<React.Fragment>
 		<Link to="/feed">Feed</Link>
 		<Link to="/register">Register</Link>
 		<Link to="/login">login</Link>
+		<Link to="/questions">questions</Link>
+		<Link to="/spaces">questions</Link>
+		<Link
+			to="#"
+			onClick={() => {
+				store.dispatch(logout());
+			}}
+		>
+			Logout
+		</Link>
 	</React.Fragment>
 );
+
+// Prepare store
+store.dispatch(authenticate());
 
 function App() {
 	return (
 		<div className="App">
-			<Layout>
-				<BrowserRouter>
-					<Navigation />
-					<Switch>
-						<Route path="/feed">
-							<Feed />
-						</Route>
-						<Route path="/register">
-							<Register />
-						</Route>
-						<Route path="/login">
-							<Login />
-						</Route>
-					</Switch>
-				</BrowserRouter>
-			</Layout>
+			<Provider store={store}>
+				<Layout>
+					<BrowserRouter>
+						<Navigation />
+						<Switch>
+							<Route path="/questions">
+								<Questions />
+							</Route>
+							<Route path="/spaces">
+								<Spaces />
+							</Route>
+							<Route path="/feed">
+								<Feed />
+							</Route>
+							<Route path="/login">
+								<Login />
+							</Route>
+							<Route path="/register">
+								<Signup />
+							</Route>
+						</Switch>
+					</BrowserRouter>
+				</Layout>
+			</Provider>
 		</div>
 	);
 }

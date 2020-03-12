@@ -1,0 +1,7 @@
+export const LOAD_QUESTIONS = 'LOAD_QUESTIONS';
+export const LOAD_QUESTIONS_FAILED = 'LOAD_QUESTIONS_FAILED';
+export const LOAD_SPACES = 'LOAD_SPACES';
+export const LOAD_SPACES_FAILED = 'LOAD_SPACES_FAILED';
+export const LOGIN = 'LOGIN';
+export const LOGIN_FAILED = 'LOGIN_FAILED';
+export const LOGOUT = 'LOGOUT';
