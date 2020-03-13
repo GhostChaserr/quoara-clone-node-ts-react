@@ -8,6 +8,6 @@ const controller = new Controller();
 space.get('/', controller.querySpaces);
 space.get('/:id/questions', controller.querySpaceQuestions);
 space.post('/', authenticate, controller.createSpace);
-space.put('/:id', authenticate, controller.updateSpace);
+space.post('/:id', authenticate, controller.updateSpace);
 
 export default space;

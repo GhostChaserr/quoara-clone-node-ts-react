@@ -9,9 +9,19 @@ import SuperModule from '../../modules/SuperModule';
 
 export default class SpaceController extends SuperModule {
 	public querySpaces = async (req: Request, res: Response) => {
-		const spaces = await Space.find();
+		
+		const [spaces, error] = await this.asyncWrapper(Space.find())
 
-		return res.json({ data: spaces });
+		// Generate error response
+		if(error !== undefined){
+			const response = this.generateResponse({ data: null, error: "failed to query spaces", status: 500 });
+			return res.json({ response });
+		}
+
+		// Generate success response
+		const response = this.generateResponse({ data: spaces, error: null, status: 200 });
+		return res.json({ response });
+
 	};
 
 	public querySpaceQuestions = async (req: Request, res: Response) => {
@@ -91,13 +101,27 @@ export default class SpaceController extends SuperModule {
 			case 'join-space':
 				const isMember = space.members.some((member) => member.user == req.user._id);
 				if (isMember) {
-					return res.json({ msg: 'already member' });
+
+					console.log(space.members);
+					console.log(req.user._id);
+
+					// Generate error response
+					const response = this.generateResponse({ data: null, error: 'already member', status: 200 });
+					return res.json({ response });
 				}
 
 				space.members.push(user);
-				space.save();
 
-				return res.json({ msg: space.members });
+				// Update space
+				const updatedSpace = await space.save();
+
+				// Get newly added member
+				const newMember = updatedSpace.members[updatedSpace.members.length - 1];
+				
+				// Generate success response
+				const response = this.generateResponse({ data: newMember, error: null, status: 200 });
+				return res.json({ response });
+			
 			case 'leave-space':
 				const isDeleted = space.members.some((member) => member.user == req.user._id);
 				if (!isDeleted) {

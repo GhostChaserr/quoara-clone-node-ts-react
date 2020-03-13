@@ -1,22 +1,32 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withRouter, Redirect } from "react-router-dom";
-import { loadSpaceQuestions } from '../../store/actions/spaceActions';
+import { loadSpaceQuestions, joinSpace } from '../../store/actions/spaceActions';
 
 export const SpaceDetailScreen = (props: any) => {
 
   useEffect(() => {
     if(props.space){
-      props.dispatch(loadSpaceQuestions(props.space._id))
+      props.loadSpaceQuestions(props.space._id)
     } 
   },[]);
 
-  // Redirect if space was not found
+  // Redirect if space was no t found
   if(!props.space) return <Redirect to="/spaces"/>
 
+  // Questions loading
+  if(props.questions.loading) return <p> Questions loading! </p>
+
+
+  // Handle space join
+  const handleSpaceJoin = (spaceId: string) => {
+    props.joinSpace(spaceId)
+  };
+  
   return (
     <div>
       <div>{props.space.title}</div>
+      <button onClick={() => handleSpaceJoin(props.space._id)}> Join space </button>
       <div>
         {props.questions.data.length !== 0 && props.questions.data.map((question: any) => {
           return (
@@ -42,4 +52,4 @@ const mapStateToProps = (state: any, props: any) => {
   }
 }
 
-export default withRouter(connect(mapStateToProps)(SpaceDetailScreen));
+export default withRouter(connect(mapStateToProps, { joinSpace, loadSpaceQuestions })(SpaceDetailScreen));

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { loadSpaces } from '../../store/actions/spaceActions';
+import { loadSpaces, joinSpace } from '../../store/actions/spaceActions';
 import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
 
@@ -16,12 +16,19 @@ const SpacesScreen = (props: any) => {
 
 	if(props.state.loading) return <p> Loading spaces! </p> 
 
+	if(props.state.error) return <p>{props.state.error}</p>
+
+	// Handle space join
+	const handleSpaceJoin = (spaceId: string) => props.joinSpace(spaceId);
+
 	return (
 		<div>
 			{props.state.data && props.state.data.map((space: any) => (
 				<div key={space._id}>
 					<div> {space.title} </div>
 					<div>{space.description}</div>
+					<p>{space.members.length}</p>
+					<button onClick={() => handleSpaceJoin(space._id)}> join space </button>
 					<Link to={`/spaces/${space._id}`}>
 						Explore
 					</Link>
@@ -37,4 +44,4 @@ const mapStateToProps = (state: any) => {
 	};
 };
 
-export default connect(mapStateToProps, { loadSpaces })(SpacesScreen);
+export default connect(mapStateToProps, { loadSpaces, joinSpace })(SpacesScreen);
