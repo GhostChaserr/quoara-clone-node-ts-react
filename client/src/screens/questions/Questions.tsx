@@ -26,6 +26,7 @@ const QuestionsScreen = (props: any) => {
 						<div key={question._id}>
 							<p> {question.question} </p>
 							<p>{question.votes}</p>
+							<p>{question.answers.length}</p>
 							<QuestionInteractionBox questionId={question._id} />
 							<QuestionAnswerBox questionId={question._id} />
 						</div>

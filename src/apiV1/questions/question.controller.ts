@@ -61,8 +61,12 @@ export default class QuestionController extends SuperModule {
 	};
 
 	public updateQuestion = async (req: any, res: Response) => {
+
+
 		// Query question
 		let question = await Question.findById(req.params.id);
+
+
 		switch (req.query.action) {
 			case 'upvote-question':
 				// Upvote
@@ -74,12 +78,8 @@ export default class QuestionController extends SuperModule {
 				let response = this.generateResponse({ data: question, error: null, status: 200 });
 				return res.json({ response }).status(200);
 			case 'answer-question':
-				// Create new answer
 
-				// return res.json({ body: req.body })
-
-				// if (!req.body.answer) return res.json({ msg: 'provide answer!' });
-
+				// Generate new answer
 				let answer = {
 					answer: req.body.answer,
 					user: {
@@ -89,15 +89,17 @@ export default class QuestionController extends SuperModule {
 					},
 					voters: []
 				};
+
+				// Push answer to answers array
 				question.answers.push(answer);
 
-				console.log(question.answers)
+				// Save question
 				await question.save();
 
-				return res.json({ user: question })
+				// Return response
+				const questionResponse =  this.generateResponse({ data: question, error: null, status: 200 });
+				return res.json({ response: questionResponse }).status(200);
 
-				response = this.generateResponse({ data: question, error: null, status: 200 });
-				return res.json({ response }).status(200);
 			case 'trash-question':
 				question.status = 'deleted';
 				await question.save();

@@ -5,8 +5,9 @@ import config from '../../config/config';
 // Load models
 import Space from './space.model';
 import Question from '../questions/question.model';
+import SuperModule from '../../modules/SuperModule';
 
-export default class SpaceController {
+export default class SpaceController extends SuperModule {
 	public querySpaces = async (req: Request, res: Response) => {
 		const spaces = await Space.find();
 
@@ -14,10 +15,19 @@ export default class SpaceController {
 	};
 
 	public querySpaceQuestions = async (req: Request, res: Response) => {
-		// Query questions for given space
-		const questions = await Question.find({ space: req.params.id });
 
-		return res.json({ questions });
+		// Query questions for given space
+		const [questions, error] = await this.asyncWrapper(Question.find({ space: req.params.id }));
+
+		if(error !== undefined) {
+			const response = this.generateResponse({ data: null, error: 'faled to query space questions', status: 400 });
+			return res.json({ response });
+		};
+
+		// Query questions for given space
+		const response = this.generateResponse({ data: questions, error:  null, status: 200 });
+		return res.json({ response }).status(200);
+		
 	};
 
 	public createSpace = async (req: any, res: Response) => {

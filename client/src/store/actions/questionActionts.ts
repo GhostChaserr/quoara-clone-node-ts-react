@@ -9,7 +9,8 @@ import {
 	LOAD_USER_QUESTIONS,
 	LOAD_USER_QUESTIONS_STARTED,
 	QUESTIONS_LOADING,
-	UPVOTE_QUESTION
+	UPVOTE_QUESTION,
+	POST_ANSWER
 } from '../types/types';
 
 // Endpoint
@@ -136,18 +137,22 @@ export const postAnswer = (answerPayload: any) => async (dispatch: any) => {
 				action: 'answer-question'
 			},
 			data: {
-				answer: "axali-pasuxi-3"
+				answer: "kitxvaze-pasuxi"
 			},
 			headers:{
 				token: localStorage.getItem('token')
 			}
 		});
 
-		console.log(response);
-		debugger;
+		const { error, data, status } = response.data.response;
+		
+		dispatch({
+			type: POST_ANSWER,
+			question: data,
+		})
+
 
 	} catch (error) {
 		console.log(error);
-		debugger;
 	}
 }

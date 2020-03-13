@@ -17,6 +17,7 @@ import Layout from './components/Layout';
 import store from './store/store';
 import Signup from './screens/auth/Signup';
 import { authenticate, logout } from './store/actions/authActions';
+import SpaceDetailScreen from './screens/spaces/SpaceDetail';
 
 const Navigation = () => (
 	<React.Fragment>
@@ -54,8 +55,11 @@ function App() {
 							<Route path="/questions">
 								<Questions />
 							</Route>
-							<Route path="/spaces">
+							<Route exact={true} path="/spaces">
 								<Spaces />
+							</Route>
+							<Route path="/spaces/:id">
+								<SpaceDetailScreen/>
 							</Route>
 							<Route path="/feed">
 								<Feed />

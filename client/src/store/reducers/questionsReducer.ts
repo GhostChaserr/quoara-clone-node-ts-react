@@ -9,8 +9,10 @@ import {
 	LOAD_USER_QUESTIONS_FAILED,
 	LOAD_USER_QUESTIONS_STARTED,
 	QUESTIONS_LOADING,
-	UPVOTE_QUESTION
+	UPVOTE_QUESTION,
+	POST_ANSWER
 } from '../types/types';
+import e from 'express';
 
 const INITIAL_STATE = {
 	error: false,
@@ -85,7 +87,22 @@ const questionsReducer = (state = INITIAL_STATE, action: any) => {
 				...state,
 				data: updated,
 			}
-
+		
+		case POST_ANSWER:
+			return {
+				...state,
+				data: state.data.map((question: any) => {
+					if(question._id == action.question._id){
+						 return {
+							 ...action.question
+						 }
+					}else{
+						 return {
+							 ...question
+						 }
+					}
+				})
+			}
 		default:
 			return state;
 	}

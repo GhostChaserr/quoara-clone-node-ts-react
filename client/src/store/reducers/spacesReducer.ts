@@ -1,13 +1,18 @@
-import { LOAD_SPACES, LOAD_QUESTIONS_FAILED } from '../types/types';
+import { LOAD_SPACES, LOAD_QUESTIONS_FAILED, SPACES_LOADING } from '../types/types';
 
 const INITIAL_STATE = {
 	error: false,
 	data: [],
-	loading: true
+	loading: false
 };
 
 const spacesReducer = (state = INITIAL_STATE, action: any) => {
 	switch (action.type) {
+		case SPACES_LOADING:
+			return {
+				...state,
+				loading: true
+			}
 		case LOAD_SPACES:
 			return {
 				...state,
