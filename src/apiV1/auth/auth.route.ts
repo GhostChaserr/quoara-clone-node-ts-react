@@ -5,8 +5,10 @@ const user: Router = Router();
 const controller = new Controller();
 
 // Load Middlewares
-import authenticate from '../../helpers/verifyToken';
+import AuthModule from '../../modules/AuthModule';
 
+const authModule = new AuthModule();
+const { authenticateUser } = authModule;
 // Sign In
 user.post('/authenticate', controller.authenticate);
 
@@ -14,9 +16,9 @@ user.post('/authenticate', controller.authenticate);
 user.post('/register', controller.register);
 
 // Query logged in user
-user.get('/me', authenticate, controller.queryMe);
+user.get('/me', authenticateUser, controller.queryMe);
 
 // Query user questions
-user.get('/me/questions', authenticate, controller.queryUserQuestions);
+user.get('/me/questions', authenticateUser, controller.queryUserQuestions);
 
 export default user;

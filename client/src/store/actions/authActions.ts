@@ -8,9 +8,17 @@ export const login = (credentials: any, history: any) => async (dispatch: any) =
 	try {
 		// Retrive token
 		const response = await axios.post(`${apiEndpoint}/authenticate`, credentials);
+		const { error, data, status } = response.data.response;
+
+		if (response.data.response.error) {
+			return dispatch({
+				type: LOGIN_FAILED,
+				error: error
+			});
+		}
 
 		// Extract token
-		const token = response.data.data;
+		const token = data;
 
 		// Save token into localstorage
 		localStorage.setItem('token', token);
@@ -23,7 +31,7 @@ export const login = (credentials: any, history: any) => async (dispatch: any) =
 	} catch (error) {
 		dispatch({
 			type: LOGIN_FAILED,
-			error: error
+			error: 'network failed'
 		});
 	}
 };
@@ -32,9 +40,17 @@ export const register = (credentials: any, history: any) => async (dispatch: any
 	try {
 		// Retrive token
 		const response = await axios.post(`${apiEndpoint}/register`, credentials);
+		const { error, data, status } = response.data.response;
+
+		if (response.data.response.error) {
+			return dispatch({
+				type: LOGIN_FAILED,
+				error: error
+			});
+		}
 
 		// Extract token
-		const token = response.data.data;
+		const token = data;
 
 		// Save token into localstorage
 		localStorage.setItem('token', token);
@@ -58,7 +74,7 @@ export const authenticate = () => async (dispatch: any) => {
 		dispatch({
 			type: LOGIN,
 			error: false,
-			user: user.data.data
+			user: user.data.response.data
 		});
 	} catch (error) {
 		// Delete token anyway

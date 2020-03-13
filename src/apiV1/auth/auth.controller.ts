@@ -7,109 +7,111 @@ import config from '../../config/config';
 import User from '../users/user.model';
 import Question from '../questions/question.model';
 
-export default class UserController {
+// Load Helper mouldes
+import SuperModule from '../../modules/SuperModule';
+
+const superModule = new SuperModule();
+
+export default class UserController extends SuperModule {
 	public authenticate = async (req: Request, res: Response): Promise<any> => {
 		const { email, password } = req.body;
-		try {
-			const user = await User.findOne({ email: req.body.email });
-			if (!user) {
-				return res.status(404).send({
-					success: false,
-					message: 'User not found'
-				});
-			}
 
-			const matchPasswords = await bcrypt.compare(password, user.password);
-			if (!matchPasswords) {
-				return res.status(401).send({
-					success: false,
-					message: 'Not authorized'
-				});
-			}
+		const [ user, userError ] = await superModule.asyncWrapper(User.findOne({ email }));
 
-			const tokenPayload = {
-				_id: user._id,
-				name: user.name,
-				lastName: user.lastName
-			};
+		if (userError !== undefined) return res.json({ msg: 'faield to query user' }).status(500);
 
-			const token = await jwt.sign(tokenPayload, config.JWT_ENCRYPTION, {
-				expiresIn: config.JWT_EXPIRATION
-			});
-
-			res.status(200).send({
-				success: true,
-				message: 'Token generated Successfully',
-				data: token
-			});
-		} catch (err) {
-			res.status(500).send({
-				success: false,
-				message: err.toString()
-			});
+		if (!user) {
+			const response = superModule.generateResponse({ data: null, error: 'user was not found', status: 404 });
+			return res.json({ response }).status(404);
 		}
+
+		const matchPasswords = await bcrypt.compare(password, user.password);
+		if (!matchPasswords) {
+			const response = superModule.generateResponse({ data: null, error: 'incoorect password', status: 400 });
+			return res.json({ response }).status(400);
+		}
+
+		const tokenPayload = {
+			_id: user._id,
+			name: user.name,
+			lastName: user.lastName
+		};
+
+		const token = await jwt.sign(tokenPayload, config.JWT_ENCRYPTION, {
+			expiresIn: config.JWT_EXPIRATION
+		});
+
+		const response = superModule.generateResponse({ data: token, error: null, status: 200 });
+		return res.json({ response }).status(200);
 	};
 
 	public register = async (req: Request, res: Response): Promise<any> => {
 		const { name, lastName, email, password, avatar } = req.body;
 
-		// Check if email taken
-		const user = await User.findOne({ email: email });
-		if (user) return res.json({ msg: 'email taken' }).status(400);
+		const [ userData, userError ] = await this.asyncWrapper(User.findOne({ email: email }));
 
-		try {
-			const hash = await bcrypt.hash(password, config.SALT_ROUNDS);
-
-			let avatar: any = {};
-
-			// Generate sample avatar
-			if (!avatar.path || !avatar.filename) {
-				avatar = {
-					path: 'file-path',
-					filename: 'file-name'
-				};
-			}
-
-			const user = new User({
-				name,
-				lastName,
-				email,
-				avatar,
-				password: hash
+		if (userError !== undefined) {
+			const response = this.generateResponse({
+				data: null,
+				error: 'failed to query email register path',
+				status: 500
 			});
-
-			const newUser = await user.save();
-
-			const tokenPayload = {
-				_id: newUser._id,
-				name: newUser.name,
-				lastName: newUser.lastName
-			};
-
-			const token = await jwt.sign(tokenPayload, config.JWT_ENCRYPTION, {
-				expiresIn: config.JWT_EXPIRATION
-			});
-
-			res.status(201).send({
-				success: false,
-				message: 'User Successfully created',
-				data: token
-			});
-		} catch (err) {
-			res.status(500).send({
-				success: false,
-				message: err.toString()
-			});
+			return res.json({ response }).status(500);
 		}
+
+		if (userData) {
+			const response = this.generateResponse({ data: null, error: 'email taken', status: 400 });
+			return res.json({ response }).status(400);
+		}
+
+		const hash = await bcrypt.hash(password, config.SALT_ROUNDS);
+
+		let userAvatar: any = {};
+
+		// Generate sample avatar
+		if (!avatar || !avatar.path || !avatar.filename) {
+			userAvatar = {
+				path: 'file-path',
+				filename: 'file-name'
+			};
+		}
+
+		const user = new User({
+			name,
+			lastName,
+			email,
+			avatar,
+			password: hash
+		});
+
+		const newUser = await user.save();
+
+		const tokenPayload = {
+			_id: newUser._id,
+			name: newUser.name,
+			lastName: newUser.lastName
+		};
+
+		const token = await jwt.sign(tokenPayload, config.JWT_ENCRYPTION, {
+			expiresIn: config.JWT_EXPIRATION
+		});
+
+		const response = this.generateResponse({ data: token, error: null, status: 200 });
+		return res.json({ response }).status(400);
 	};
 
 	public queryMe = async (req: any, res: Response): Promise<any> => {
-		const user = await User.findById(req.user._id).select('name lastName avatar');
-		return res.json({
-			data: user,
-			success: true,
-			error: null
-		});
+		const [ data, error ] = await superModule.asyncWrapper(
+			User.findById(req.user._id).select('name lastName avatar')
+		);
+
+		if (error !== undefined) {
+			const response = this.generateResponse({ data: null, error: 'faield to query me', status: 501 });
+			return res.json({ response }).status(500);
+		}
+
+		const response = this.generateResponse({ data: data, error: null, status: 200 });
+		return res.json({ response }).status(200);
 	};
 
 	public queryUserQuestions = async (req, res) => {

@@ -25,8 +25,24 @@
 			[] Register space
 			[] Query space
 			[] Post space question
-
-
+		[] Error handling
+			[] Custom error handling for API endpoints
+			
+[X] Client setup
+	[] Routes
+		[x] Login route
+		[x] Register route
+		[x] Quetions route
+		[x] Spaces route
+	[] Redux
+		[x] Auth state
+		[x] Questions state
+		[x] Spaces state
+	[] Forms
+		[x] Register form
+		[x] Login form
+		[]  Ask question form
+	
 # Endpoints - AUTH
 
 > POST - http://localhost:3000/api/v1/register
