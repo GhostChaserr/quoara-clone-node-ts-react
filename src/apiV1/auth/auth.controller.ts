@@ -115,9 +115,20 @@ export default class UserController extends SuperModule {
 	};
 
 	public queryUserQuestions = async (req, res) => {
-		const questions = await Question.find({ 'user.user': req.user._id });
-		return res.json({
-			data: questions
-		});
+		// Query questions
+		const [ questions, error ] = await this.asyncWrapper(Question.find({ 'user.user': req.user._id }));
+
+		if (error !== undefined) {
+			const response = this.generateResponse({
+				data: null,
+				error: 'failed to query user questions',
+				status: 500
+			});
+			return res.json({ response }).status(500);
+		}
+
+		// Return reponse
+		const response = this.generateResponse({ data: questions, error: null, status: 200 });
+		return res.json({ response }).status(200);
 	};
 }

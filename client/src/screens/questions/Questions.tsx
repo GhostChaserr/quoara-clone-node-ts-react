@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { laodQuestions } from '../../store/actions/questionActionts';
 import { connect } from 'react-redux';
+import PostQuestion from '../../components/shared/PostQuestion';
+import QuestionInteractionBox from '../../components/social/QuestionInteractionBox';
+import QuestionAnswerBox from '../../components/social/QuestionAnswerBox';
 
 const QuestionsScreen = (props: any) => {
 	// Get data from state
@@ -12,13 +15,19 @@ const QuestionsScreen = (props: any) => {
 
 	return (
 		<div>
+			<div>
+				<PostQuestion />
+			</div>
 			{loading ? (
 				<p> Loading! </p>
 			) : (
 				<div>
 					{data.map((question: any) => (
 						<div key={question._id}>
-							<p> redering question </p>
+							<p> {question.question} </p>
+							<p>{question.votes}</p>
+							<QuestionInteractionBox questionId={question._id} />
+							<QuestionAnswerBox questionId={question._id} />
 						</div>
 					))}
 				</div>

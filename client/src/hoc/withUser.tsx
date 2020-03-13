@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { authenticate } from '../store/actions/authActions';
 import { Redirect } from 'react-router-dom';
+import store from '../store/store';
 
 const withUser = (Component: any) => {
 	return (props: any) => {
@@ -15,11 +16,7 @@ const withUser = (Component: any) => {
 			return <Redirect to="/" />;
 		}
 
-		return (
-			<div>
-				<Component user={data} {...props} />
-			</div>
-		);
+		return <div>{!loading && data && <Component user={data} {...props} />}</div>;
 	};
 };
 

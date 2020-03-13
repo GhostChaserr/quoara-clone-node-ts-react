@@ -1,10 +1,14 @@
 import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
-import { LOGIN_FAILED, LOGIN, LOGOUT } from '../types/types';
+import { LOGIN_FAILED, LOGIN, LOGOUT, LOGIN_LOADING } from '../types/types';
 
 const apiEndpoint: any = process.env.REACT_APP_ENDPOINT;
 
 export const login = (credentials: any, history: any) => async (dispatch: any) => {
+	dispatch({
+		type: LOGIN_LOADING
+	});
+
 	try {
 		// Retrive token
 		const response = await axios.post(`${apiEndpoint}/authenticate`, credentials);
@@ -37,6 +41,10 @@ export const login = (credentials: any, history: any) => async (dispatch: any) =
 };
 
 export const register = (credentials: any, history: any) => async (dispatch: any) => {
+	dispatch({
+		type: LOGIN_LOADING
+	});
+
 	try {
 		// Retrive token
 		const response = await axios.post(`${apiEndpoint}/register`, credentials);
@@ -69,12 +77,25 @@ export const register = (credentials: any, history: any) => async (dispatch: any
 };
 
 export const authenticate = () => async (dispatch: any) => {
+	dispatch({
+		type: LOGIN_LOADING
+	});
+
 	try {
-		const user = await axios.get(`${apiEndpoint}/me`, { headers: { token: localStorage.getItem('token') } });
+		const response = await axios.get(`${apiEndpoint}/me`, { headers: { token: localStorage.getItem('token') } });
+		const { error, data, status } = response.data.response;
+
+		if (response.data.response.error) {
+			return dispatch({
+				type: LOGIN_FAILED,
+				error: error
+			});
+		}
+
 		dispatch({
 			type: LOGIN,
 			error: false,
-			user: user.data.response.data
+			user: data
 		});
 	} catch (error) {
 		// Delete token anyway
@@ -83,7 +104,7 @@ export const authenticate = () => async (dispatch: any) => {
 		// Update auth error state
 		dispatch({
 			type: LOGIN_FAILED,
-			error: true,
+			error: error,
 			data: null
 		});
 	}

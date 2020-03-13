@@ -37,7 +37,11 @@ const Navigation = () => (
 );
 
 // Prepare store
-store.dispatch(authenticate());
+
+const currentSate = store.getState();
+if (currentSate.auth.data === null) {
+	store.dispatch(authenticate());
+}
 
 function App() {
 	return (
