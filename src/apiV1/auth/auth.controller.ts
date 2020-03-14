@@ -6,6 +6,7 @@ import config from '../../config/config';
 // Load models
 import User from '../users/user.model';
 import Question from '../questions/question.model';
+import Space from "../spaces/space.model";
 
 // Load Helper mouldes
 import SuperModule from '../../modules/SuperModule';
@@ -131,4 +132,57 @@ export default class UserController extends SuperModule {
 		const response = this.generateResponse({ data: questions, error: null, status: 200 });
 		return res.json({ response }).status(200);
 	};
+
+	public queryUserSpaces = async (req, res) => {
+		let response: object = {}
+		switch (req.query.filter) {
+			case 'joined':
+
+				const [joinedSpaces, joinedSpacesError] = await this.asyncWrapper(Space.find({
+					'members':{
+						$elemMatch : {
+							'user' : req.user._id
+					  }
+					}
+				}))
+
+				if(joinedSpacesError !== undefined) {
+
+					// Error response
+					response = this.generateResponse({ data: null, error: 'failed to query joined spaces', status: 500 });
+					return res.json({ response }).status(200);
+
+				}
+
+				// Success response
+				response = this.generateResponse({ data: joinedSpaces, error: null, status: 200 });
+				return res.json({ response }).status(200);
+
+			case 'owned':
+
+				const [ownedSpaces, ownedSpacesError] = await this.asyncWrapper(Space.find({
+					'admins':{
+						$elemMatch :{
+							'user': req.user._id
+						}
+					}
+				}));
+
+				if(ownedSpacesError !== undefined){
+
+					// Error response
+					response = this.generateResponse({ data: null, error: 'failed to query owned spaces', status: 500 });
+					return res.json({ response }).status(500)
+				}
+
+				response = this.generateResponse({ data: ownedSpaces, error: null, status: 200 });
+				return res.json({ response }).status(200)
+
+			default:
+
+				// Error response
+				response = this.generateResponse({ data: null, error: 'provide filter query argument', status: 400 });
+				return res.json({ response }).status(400)
+		}
+	}
 }

@@ -6,6 +6,17 @@ import * as morgan from 'morgan';
 import apiV1 from './apiV1/index';
 import * as errorHandler from './helpers/errorHandler';
 
+
+// let server = app.listen(3000);
+// let io = require('socket.io')(server);
+
+// // place this middleware before any other route definitions
+// // makes io available as req.io in all request handlers
+// app.use(function(req, res, next) {
+//     req.io = io;
+//     next();
+// });
+
 class App {
 	public express: express.Application;
 

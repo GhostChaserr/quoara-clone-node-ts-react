@@ -21,4 +21,7 @@ user.get('/me', authenticateUser, controller.queryMe);
 // Query user questions
 user.get('/me/questions', authenticateUser, controller.queryUserQuestions);
 
+// Query user owned or joined spaces
+user.get('/me/spaces', authenticateUser, controller.queryUserSpaces);
+
 export default user;

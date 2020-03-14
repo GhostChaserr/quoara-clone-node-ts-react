@@ -34,14 +34,36 @@
 		[x] Register route
 		[x] Quetions route
 		[x] Spaces route
+		[x] Space detail view
+		[x] Feed route
 	[] Redux
 		[x] Auth state
 		[x] Questions state
 		[x] Spaces state
+		[x] Space questions state
+		[x] Types
 	[] Forms
 		[x] Register form
 		[x] Login form
-		[]  Ask question form
+		[x] Post question form
+		[x]	Post answer form
+	[] Actions
+		[x] Upvote question
+		[x] Post question
+		[x] Join space
+		[] Leave space
+		[] Remove space
+		[] Upvote answer
+	[] Queries
+		[x] Query questions
+		[x] Query workplaces
+		[x] Query user posted questions
+		[]  Query user created spaces
+	[] Swagger interation
+	[] Side quests
+		[] Testing Login route
+		[] Testing Register route
+
 	
 # Endpoints - AUTH
 
@@ -112,4 +134,14 @@
 > GET - http://localhost:3000/api/v1/spaces
 {
 	
+}
+
+> POST - http://localhost:4000/api/v1/spaces/5e6a3b845089ab2748100744?action=join-space
+{
+
+}
+
+> POST - http://localhost:4000/api/v1/spaces/5e6a3b845089ab2748100744?action=leave-space
+{
+
 }
