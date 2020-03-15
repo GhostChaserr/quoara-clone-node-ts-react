@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withRouter, Redirect } from "react-router-dom";
-import { loadSpaceQuestions, joinSpace } from '../../store/actions/spaceActions';
+import { loadSpaceQuestions, joinSpace, postSpaceQuestion, upvoteSpaceQuestion, postSpaceQuestionAnswer } from '../../store/actions/spaceActions';
+import PostQuestion from '../../components/shared/PostQuestion';
+import QuestionInteractionBox from '../../components/social/QuestionInteractionBox';
+import QuestionAnswerBox from '../../components/social/QuestionAnswerBox';
+
 
 export const SpaceDetailScreen = (props: any) => {
 
@@ -25,6 +29,9 @@ export const SpaceDetailScreen = (props: any) => {
   
   return (
     <div>
+      <div>
+        <PostQuestion options={{ spaceId: props.spaceId }} action={postSpaceQuestion}/>
+      </div>
       <div>{props.space.title}</div>
       <button onClick={() => handleSpaceJoin(props.space._id)}> Join space </button>
       <div>
@@ -32,6 +39,14 @@ export const SpaceDetailScreen = (props: any) => {
           return (
             <div key={question._id}>
               <p>{question.question}</p>
+              <QuestionInteractionBox
+                action={upvoteSpaceQuestion}
+                questionId={question._id}
+              />
+              <QuestionAnswerBox
+                action={postSpaceQuestionAnswer}
+                questionId={question._id}
+              />
             </div>
           );
         })}
@@ -48,7 +63,8 @@ const mapStateToProps = (state: any, props: any) => {
   return {
     ...props,
     space: currentSpace,
-    questions: state.spaceQuestions
+    questions: state.spaceQuestions,
+    spaceId: spaceId
   }
 }
 

@@ -8,8 +8,12 @@ const QuestionInteractionBox = (props: any) => {
 
 	// Handle posting
 	const handleUpvote = (data: any) => {
+		
+		const { action, dispatch, questionId } = props;
+
 		// Post new question
-		props.dispatch(upvoteQuestion(props.questionId));
+		dispatch(action({ questionId: questionId }));
+
 	};
 	return (
 		<div>
@@ -23,5 +27,9 @@ const mapStateToProps = (state: any) => {
 		auth: state.auth
 	};
 };
+
+QuestionInteractionBox.defaultProps = {
+	action: upvoteQuestion
+}
 
 export default connect(mapStateToProps)(QuestionInteractionBox);

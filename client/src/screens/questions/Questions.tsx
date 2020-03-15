@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { laodQuestions } from '../../store/actions/questionActionts';
+import { laodQuestions, postQuestion } from '../../store/actions/questionActionts';
 import { connect } from 'react-redux';
 import PostQuestion from '../../components/shared/PostQuestion';
 import QuestionInteractionBox from '../../components/social/QuestionInteractionBox';

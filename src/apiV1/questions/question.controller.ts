@@ -64,19 +64,35 @@ export default class QuestionController extends SuperModule {
 
 
 		// Query question
-		let question = await Question.findById(req.params.id);
+		// let question = await Question.findById(req.params.id);
+		let response = {}
 
+		const [question, questionError] = await this.asyncWrapper(Question.findById(req.params.id));
+
+		if(questionError !== undefined) {
+
+			response = this.generateResponse({ data: null, error: 'unable to query question', status: 500 });
+			return res.status(404).json({ response })
+		};
 
 		switch (req.query.action) {
 			case 'upvote-question':
-				// Upvote
+
+				// Update voters array
 				question.voters.push(req.user._id);
 				question.votes = question.votes + 1;
-				await question.save();
 
-				// Return response
-				let response = this.generateResponse({ data: question, error: null, status: 200 });
-				return res.json({ response }).status(200);
+				// Save update
+				const [upvotedQuestion, upvoteError] = await this.asyncWrapper(question.save());
+
+				if(upvoteError !== undefined){
+					response = this.generateResponse({ data: null, error: 'upvote failed', status: 200 });
+					return res.status(500).json({ response })
+				};
+
+				response = this.generateResponse({ data: upvotedQuestion, error: null, status: 200 });
+				return res.status(200).json({ response });
+
 			case 'answer-question':
 
 				// Generate new answer
@@ -93,12 +109,17 @@ export default class QuestionController extends SuperModule {
 				// Push answer to answers array
 				question.answers.push(answer);
 
-				// Save question
-				await question.save();
+				// Perform update
+				const [savedAnswer, saveError] = await this.asyncWrapper(question.save());
 
-				// Return response
-				const questionResponse =  this.generateResponse({ data: question, error: null, status: 200 });
-				return res.json({ response: questionResponse }).status(200);
+				if(saveError !== undefined){
+					
+					response = this.generateResponse({ data: null, error: 'failed to post answer', status: 200 });
+					return res.status(500).json({ response })
+				}
+
+				response =  this.generateResponse({ data: savedAnswer, error: null, status: 200 });
+				return res.status(200).json({ response  });
 
 			case 'trash-question':
 				question.status = 'deleted';

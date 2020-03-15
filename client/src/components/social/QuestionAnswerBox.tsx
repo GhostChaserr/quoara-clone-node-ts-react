@@ -11,11 +11,12 @@ const QuestionAnswerBox = (props: any) => {
 	// Handle posting
 	const handleSubmit = (data: any) => {
 
-		props.dispatch(postAnswer({
-			answer: data.question,
-			questionId: props.questionId
-		}));
+		const { action, questionId, dispatch  } = props;
 
+		dispatch(action({
+			answer: data.question,
+			questionId: questionId
+		}));
 
 	};
 	return (
@@ -30,5 +31,10 @@ const mapStateToProps = (state: any) => {
 		auth: state.auth
 	};
 };
+
+QuestionAnswerBox.defaultProps = {
+	action: postAnswer,
+	actionId: ""
+}
 
 export default connect(mapStateToProps)(QuestionAnswerBox);

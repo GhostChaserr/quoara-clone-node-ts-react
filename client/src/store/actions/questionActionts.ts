@@ -10,7 +10,9 @@ import {
 	LOAD_USER_QUESTIONS_STARTED,
 	QUESTIONS_LOADING,
 	UPVOTE_QUESTION,
-	POST_ANSWER
+	POST_ANSWER,
+	UPVOTE_QUESTION_FAILED,
+	POST_ANSWER_FAILED
 } from '../types/types';
 
 // Endpoint
@@ -43,24 +45,33 @@ export const postQuestion = (question: any) => async (dispatch: any) => {
 			headers: { token: localStorage.getItem('token') }
 		});
 
-		const { error, data, status } = response.data.response;
+		const { data  } = response.data.response;
 
-		// Handle error
-		if (response.data.response.error) {
-			return dispatch({
-				type: POST_QUESTION_FAILED,
-				error: error
-			});
-		}
 		dispatch({
 			type: POST_QUESTION,
 			question: data
 		});
-	} catch (error) {
-		return dispatch({
+		
+
+	} catch (err) {
+
+		// If error response is not available
+		if(!err.response || !err.response.data) {
+			return dispatch({
+				type: POST_QUESTION_FAILED,
+				error: 'server is down'
+				});
+		}
+		
+		// Deconstruct sent error
+		const { error } = err.response.data.response;
+
+		// Server error
+		dispatch({
 			type: POST_QUESTION_FAILED,
 			error: error
 		});
+
 	}
 };
 
@@ -75,25 +86,41 @@ export const loadUserQuestions = () => async (dispatch: any) => {
 			headers: { token: localStorage.getItem('token') }
 		});
 
-		const { error, data, status } = response.data.response;
-		if (response.data.response.error) {
-			return dispatch({
-				type: LOAD_USER_QUESTIONS_FAILED,
-				error: error
-			});
-		}
+		const { data  } = response.data.response;
 
 		dispatch({
 			type: LOAD_USER_QUESTIONS,
 			questions: data
 		});
-	} catch (error) {
-		console.log(error);
+
+	} catch (err) {
+
+		// If error response is not available
+		if(!err.response || !err.response.data) {
+			return dispatch({
+				type: LOAD_USER_QUESTIONS_FAILED,
+				error: 'server is down'
+				});
+		}
+		
+		// Deconstruct sent error
+		const { error } = err.response.data.response;
+
+		// Server error
+		dispatch({
+			type: LOAD_USER_QUESTIONS_FAILED,
+			error: error
+		});
 	}
-	// http://localhost:4000/api/v1/me/questions
+
 };
 
-export const upvoteQuestion = (questionId: string) => async (dispatch: any) => {
+export const upvoteQuestion = (questionPayload: any) => async (dispatch: any) => {
+
+	const { questionId } = questionPayload;
+
+	console.log(questionId);
+
 	try {
 
 		const response = await axios.request({
@@ -106,7 +133,8 @@ export const upvoteQuestion = (questionId: string) => async (dispatch: any) => {
 				token: localStorage.getItem('token')
 			}
 		});
-		const { error, data, status } = response.data.response;
+
+		const { data  } = response.data.response;
 
 		// Send upvoted question to the store
 		dispatch({
@@ -114,10 +142,25 @@ export const upvoteQuestion = (questionId: string) => async (dispatch: any) => {
 			question: data
 		});
 
-	} catch (error) {
-		console.log(error);
+	} catch (err) {
 
-		debugger;
+		// If error response is not available
+		if(!err.response || !err.response.data) {
+			return dispatch({
+				type: UPVOTE_QUESTION_FAILED,
+				error: 'server is down'
+				});
+		}
+		
+		// Deconstruct sent error
+		const { error } = err.response.data.response;
+
+		// Server error
+		dispatch({
+			type: UPVOTE_QUESTION_FAILED,
+			error: error
+		});
+
 	}
 };
 
@@ -126,7 +169,6 @@ export const postAnswer = (answerPayload: any) => async (dispatch: any) => {
 
 	const { answer, questionId } = answerPayload;
 
-	const jsonData = JSON.stringify({ answer: answer });
 
 	try {
 
@@ -137,14 +179,14 @@ export const postAnswer = (answerPayload: any) => async (dispatch: any) => {
 				action: 'answer-question'
 			},
 			data: {
-				answer: "kitxvaze-pasuxi"
+				answer: answer
 			},
 			headers:{
 				token: localStorage.getItem('token')
 			}
 		});
 
-		const { error, data, status } = response.data.response;
+		const { data } = response.data.response;
 		
 		dispatch({
 			type: POST_ANSWER,
@@ -152,7 +194,24 @@ export const postAnswer = (answerPayload: any) => async (dispatch: any) => {
 		})
 
 
-	} catch (error) {
-		console.log(error);
-	}
+	} catch (err) {
+		
+		// If error response is not available
+		if(!err.response || !err.response.data) {
+			return dispatch({
+				type: POST_ANSWER_FAILED,
+				error: 'server is down'
+			});
+		}
+
+		// Deconstruct sent error
+		const { error } = err.response.data.response;
+
+		// Server error
+		dispatch({
+			type: POST_ANSWER_FAILED,
+			error: error
+		});
+	};
+	
 }

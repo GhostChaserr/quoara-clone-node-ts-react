@@ -10,7 +10,8 @@ import {
 	LOAD_USER_QUESTIONS_STARTED,
 	QUESTIONS_LOADING,
 	UPVOTE_QUESTION,
-	POST_ANSWER
+	POST_ANSWER,
+	POST_ANSWER_FAILED
 } from '../types/types';
 import e from 'express';
 
@@ -44,10 +45,9 @@ const questionsReducer = (state = INITIAL_STATE, action: any) => {
 		case POST_QUESTION_FAILED:
 			return {
 				...state,
-				data: [ ...state.data ],
 				loading: false,
 				error: action.error
-			};
+			}
 		case QUESTIONS_LOADING:
 			return {
 				...state,
@@ -102,6 +102,12 @@ const questionsReducer = (state = INITIAL_STATE, action: any) => {
 						 }
 					}
 				})
+			}
+			
+		case POST_ANSWER_FAILED:
+			return {
+				...state,
+				error: action.error
 			}
 		default:
 			return state;
