@@ -78,12 +78,19 @@ export default class SpaceController extends SuperModule {
 	};
 
 	public updateSpace = async (req, res: Response) => {
+
+
 		const space = await Space.findById(req.params.id);
+		const response = {}
+
+
 		const user = {
 			user: req.user._id,
 			name: req.user.name,
 			lastName: req.user.lastName
 		};
+
+
 		switch (req.query.action) {
 			case 'post-question':
 				const question = new Question();
@@ -138,16 +145,29 @@ export default class SpaceController extends SuperModule {
 				const isDeleted = space.members.some((member) => member.user == req.user._id);
 
 				if (!isDeleted) {
+
+					// Member was not found
 					const response = this.generateResponse({ data: null, error: 'member was not found', status: 404 });
-					return res.json({ response }).status(404)
+					return res.status(404).json({ response });
 				}
 
+				// Update space members
+				const memberToDelete = space.members.find(member => member.user == req.user._id);
 				const members = space.members.filter((member) => member.user != req.user._id);
 				space.members = members;
-				space.save();
 
-				const leaveResponse = this.generateResponse({ data: null, error: 'member was not found', status: 404 });
-				return res.json({ response: leaveResponse }).status(200)
+				const [, updatedMemberError] = await this.asyncWrapper(space.save());
+
+				if(updatedMemberError !== undefined) {
+					const updateErrorResponse = this.generateResponse({ data: null, error:"failed to remove member", status: 500 });
+					return res.status(500).json({ response: updateErrorResponse });
+				}
+
+				// Success response
+				const leaveResponse = this.generateResponse({ data: memberToDelete, error: null, status: 200 });
+				return res.status(200).json({ response: leaveResponse });
+
+				
 			case 'remove-member':
 				const isAdmin = space.admins.some((admin) => admin.user == req.user._id);
 				if (!isAdmin) {

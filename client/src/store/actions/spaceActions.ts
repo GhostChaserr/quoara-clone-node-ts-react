@@ -1,4 +1,4 @@
-import { LOAD_SPACES, LOAD_SPACES_FAILED, SPACES_LOADING, SPACE_QUESTIONS_LOADING, LOAD_SPACE_QUESTIONS, LOAD_SPACE_QUESTIONS_FAILED, SPACE_JOIN_FAILED, SPACE_JOIN_SUCCESS, POST_SPACE_QUESTION, POST_SPACE_QUESTION_FAILED } from '../types/types';
+import { LOAD_SPACES, LOAD_SPACES_FAILED, SPACES_LOADING, SPACE_QUESTIONS_LOADING, LOAD_SPACE_QUESTIONS, LOAD_SPACE_QUESTIONS_FAILED, SPACE_JOIN_FAILED, SPACE_JOIN_SUCCESS, POST_SPACE_QUESTION, POST_SPACE_QUESTION_FAILED, UPVOTE_SPACE_QUESTION, UPVOTE_SPACE_QUESTION_FAILED, POST_SPACE_QUESTION_ANSWER, POST_SPACE_QUESTION_ANSWER_FAILED, LEAVE_SPACE, LEAVE_SPACE_FAILED } from '../types/types';
 import axios from 'axios';
 
 // Epi endpoint
@@ -184,13 +184,106 @@ export const postSpaceQuestion = (questionPayload: any) => async (dispatch: any)
 }
 
 export const upvoteSpaceQuestion = (questionPayload: any) => async (dispatch: any) => {
+
 	const { questionId } = questionPayload;
 
-	console.log(questionId);
+	try {
+
+		const response = await axios.request({
+			url: `${apiEndpoint}/questions/${questionId}`,
+			method: 'POST',
+			params:{
+				action: 'upvote-question'
+			},
+			headers:{
+				token: localStorage.getItem('token')
+			}
+		});
+
+		const { data  } = response.data.response;
+
+		// Send upvoted question to the store
+		dispatch({
+			type: UPVOTE_SPACE_QUESTION,
+			question: data
+		});
+		
+	} catch (error) {
+
+		dispatch({
+			type: UPVOTE_SPACE_QUESTION_FAILED,
+		  error: 'failed'
+		});
+	}
 }
 
-export const postSpaceQuestionAnswer = (answerPayload: any) => (dispatch: any) => {
+export const postSpaceQuestionAnswer = (answerPayload: any) => async (dispatch: any) => {
 	const { questionId, answer } = answerPayload;
 
+	try {
+
+		const response = await axios.request({
+			url: `${apiEndpoint}/questions/${questionId}`,
+			method: 'POST',
+			params:{
+				action: 'answer-question'
+			},
+			data: {
+				answer: answer
+			},
+			headers:{
+				token: localStorage.getItem('token')
+			}
+		});
+
+		const { data } = response.data.response;
+
+		dispatch({
+			type: POST_SPACE_QUESTION_ANSWER,
+			question: data
+		})
+
+
+	} catch (error) {
+
+		dispatch({
+			type: POST_SPACE_QUESTION_ANSWER_FAILED,
+			question: 'failed'
+		})
+	}
+
 	console.log(questionId, answer);
+}
+
+export const leaveSpace = (spaceId: string) => async (dispatch: any) => {
+	try {
+
+		const endpoint = `${apiEndpoint}/spaces/${spaceId}`;
+
+		const response = await axios.request({
+			url: endpoint,
+			method: 'POST',
+			params:{
+				action: 'leave-space'
+			},
+			headers:{
+				token: localStorage.getItem('token')
+			}
+		});
+
+		const { data } = response.data.response;
+		dispatch({
+			type: LEAVE_SPACE,
+			data: {
+				spaceId: spaceId,
+				member: data
+			}
+		});
+		
+	} catch (error) {
+		dispatch({
+			type: LEAVE_SPACE_FAILED,
+			error: "failed"
+		});
+	}
 }

@@ -2,6 +2,11 @@ import React, { useEffect } from 'react';
 import { loadSpaces, joinSpace } from '../../store/actions/spaceActions';
 import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
+import JoinLeaveButton from './JoinLeaveButton';
+
+
+// Load components
+
 
 const SpacesScreen = (props: any) => {
 
@@ -28,10 +33,13 @@ const SpacesScreen = (props: any) => {
 					<div> {space.title} </div>
 					<div>{space.description}</div>
 					<p>{space.members.length}</p>
-					<button onClick={() => handleSpaceJoin(space._id)}> join space </button>
 					<Link to={`/spaces/${space._id}`}>
 						Explore
 					</Link>
+					<br/>
+					<JoinLeaveButton 
+						spaceId={space._id} 
+					/>
 				</div>
 			))}
 		</div>
