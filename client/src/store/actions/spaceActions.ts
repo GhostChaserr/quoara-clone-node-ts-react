@@ -208,12 +208,24 @@ export const upvoteSpaceQuestion = (questionPayload: any) => async (dispatch: an
 			question: data
 		});
 		
-	} catch (error) {
+	} catch (err) {
 
+		if(!err.response || !err.response.data) {
+			return dispatch({
+				type: UPVOTE_SPACE_QUESTION_FAILED,
+				error: 'server is down'
+			});
+		}
+
+		// Deconstruct sent error
+		const { error } = err.response.data.response;
+
+		// Server error
 		dispatch({
 			type: UPVOTE_SPACE_QUESTION_FAILED,
-		  error: 'failed'
+			error: error
 		});
+
 	}
 }
 
@@ -244,12 +256,24 @@ export const postSpaceQuestionAnswer = (answerPayload: any) => async (dispatch: 
 		})
 
 
-	} catch (error) {
+	} catch (err) {
+		
+		if(!err.response || !err.response.data) {
+			return dispatch({
+				type: POST_SPACE_QUESTION_ANSWER_FAILED,
+				error: 'server is down'
+			});
+		}
 
+		// Deconstruct sent error
+		const { error } = err.response.data.response;
+
+		// Server error
 		dispatch({
 			type: POST_SPACE_QUESTION_ANSWER_FAILED,
-			question: 'failed'
-		})
+			error: error
+		});
+
 	}
 
 	console.log(questionId, answer);

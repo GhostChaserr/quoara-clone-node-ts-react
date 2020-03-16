@@ -78,6 +78,14 @@ export default class QuestionController extends SuperModule {
 		switch (req.query.action) {
 			case 'upvote-question':
 
+				// Check if already voted
+				const hasVoted = question.voters.some((voter: any) => voter._id == req.user._id);
+				
+				if(hasVoted){
+					response = this.generateResponse({ data: null, error: 'alredy voted', status: 200 });
+					return res.status(400).json({ response })
+				};
+
 				// Update voters array
 				question.voters.push(req.user._id);
 				question.votes = question.votes + 1;

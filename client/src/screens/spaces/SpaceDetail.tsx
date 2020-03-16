@@ -41,7 +41,7 @@ export const SpaceDetailScreen = (props: any) => {
       </div>
       <div>{props.space.title}</div>
       <div>
-        <JoinLeaveButton />
+        <JoinLeaveButton spaceId={props.spaceId} />
       </div>
       <div>
         {props.questions.data.length !== 0 && props.questions.data.map((question: any) => {

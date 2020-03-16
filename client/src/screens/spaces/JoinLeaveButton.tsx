@@ -27,9 +27,13 @@ const JoinLeaveButton = (props: any) => {
 
 const mapStateToProps = (state: any, props: any) => {
 
+  console.log(props);
+
   // Query given space
   const { spaceId } = props;
   const space = state.spaces.data.find((space: any) => space._id == spaceId);
+
+  console.log(space);
 
   // Query logged in user and check if member
   const userId = state.auth.data !== null && state.auth.data._id || undefined;

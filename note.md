@@ -51,18 +51,20 @@
 		[x] Upvote question
 		[x] Post question
 		[x] Join space
-		[] Leave space
-		[] Remove space
-		[] Upvote answer
+		[x] Leave space
+		[x] Upvote space question
+		[x] Jon leave space
+		[x] Post space queston
 	[] Queries
 		[x] Query questions
 		[x] Query workplaces
 		[x] Query user posted questions
-		[]  Query user created spaces
+		[x] Query user created spaces
 	[] Swagger interation
 	[] Side quests
 		[] Testing Login route
 		[] Testing Register route
+		[x] Prevent user to upvote question twice
 
 	
 # Endpoints - AUTH

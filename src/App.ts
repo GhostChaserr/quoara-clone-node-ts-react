@@ -5,6 +5,8 @@ import * as helmet from 'helmet';
 import * as morgan from 'morgan';
 import apiV1 from './apiV1/index';
 import * as errorHandler from './helpers/errorHandler';
+import * as swaggerUi from "swagger-ui-express";
+import * as swaggerDocument from "../swagger.json";
 
 
 // let server = app.listen(3000);
@@ -36,6 +38,9 @@ class App {
 	}
 
 	private setRoutes(): void {
+
+		// Register app and swagger docs
+		this.express.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 		this.express.use('/api/v1', apiV1);
 	}
 

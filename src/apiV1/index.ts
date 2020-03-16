@@ -6,6 +6,10 @@ import users from './users/user.route';
 import questions from './questions/questions.route';
 import spaces from './spaces/space.route';
 
+// Load swagger
+import * as swaggerUi from "swagger-ui-express";
+import * as swaggerDocument from "../../swagger.json";
+
 const router: Router = Router();
 
 // Registering routes
